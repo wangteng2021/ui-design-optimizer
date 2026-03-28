@@ -22,6 +22,13 @@
 - shadcn/ui
 - 玻璃拟态
 - 暗色主题
+- 图表设计
+- 折线图
+- 走势图
+- 数据可视化
+- ECharts
+- Chart.js
+- Recharts
 
 ---
 
@@ -633,3 +640,444 @@ Skill: 提供按钮样式优化建议和代码
 - shadcn/ui 组件库
 - Google Fonts
 - Tailwind CSS
+
+---
+
+## 模块九：图表设计 Charts & Data Visualization
+
+### 9.1 AI 生成图表的常见问题
+
+```markdown
+# ❌ AI 味图表的特征
+- 默认蓝色配色 (Chart.js 默认蓝色)
+- 缺乏层次感的数据展示
+- 简陋的图例和标签
+- 缺乏交互效果
+- 缺乏品牌特色
+- 过于拥挤的网格线
+- 缺乏留白
+```
+
+### 9.2 专业图表设计原则
+
+```markdown
+# ✅ 专业图表特征
+- 独特的配色方案（与品牌一致）
+- 清晰的层次结构
+- 优雅的交互效果
+- 适当的留白和间距
+- 可读的字体和标签
+- 数据点标注
+- 平滑的曲线过渡
+```
+
+### 9.3 折线图设计
+
+#### ❌ AI 味折线图
+```javascript
+// 典型 AI 生成的折线图
+{
+  type: 'line',
+  data: {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+    datasets: [{
+      label: 'Sales',
+      data: [65, 59, 80, 81, 56],
+      borderColor: 'rgb(54, 162, 235)', // 默认蓝色
+      backgroundColor: 'rgba(54, 162, 235, 0.1)',
+    }]
+  }
+}
+```
+
+#### ✅ 专业折线图
+```javascript
+// 专业设计折线图
+{
+  type: 'line',
+  data: {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May'],
+    datasets: [{
+      label: 'Revenue',
+      data: [65000, 59000, 80000, 81000, 56000],
+      borderColor: '#22c55e',        // 品牌绿色
+      backgroundColor: (context) => {
+        const ctx = context.chart.ctx;
+        const gradient = ctx.createLinearGradient(0, 0, 0, 300);
+        gradient.addColorStop(0, 'rgba(34, 197, 94, 0.3)');
+        gradient.addColorStop(1, 'rgba(34, 197, 94, 0)');
+        return gradient;
+      },
+      fill: true,
+      tension: 0.4,                  // 平滑曲线
+      pointRadius: 0,                // 默认隐藏点
+      pointHoverRadius: 8,            // 悬停显示
+      pointHoverBackgroundColor: '#22c55e',
+      pointHoverBorderColor: '#fff',
+      pointHoverBorderWidth: 2,
+      borderWidth: 3,
+    }]
+  },
+  options: {
+    responsive: true,
+    maintainAspectRatio: false,
+    plugins: {
+      legend: {
+        display: true,
+        position: 'top',
+        align: 'end',
+        labels: {
+          color: '#a1a1aa',
+          font: { family: 'Inter', size: 12 },
+          boxWidth: 12,
+          usePointStyle: true,
+        }
+      },
+      tooltip: {
+        backgroundColor: '#1f2937',
+        titleColor: '#f9fafb',
+        bodyColor: '#d1d5db',
+        borderColor: '#374151',
+        borderWidth: 1,
+        padding: 12,
+        displayColors: false,
+        callbacks: {
+          label: (context) => `$${context.parsed.y.toLocaleString()}`
+        }
+      }
+    },
+    scales: {
+      x: {
+        grid: {
+          display: false,
+        },
+        ticks: {
+          color: '#71717a',
+          font: { size: 11 }
+        }
+      },
+      y: {
+        grid: {
+          color: '#27272a',
+        },
+        ticks: {
+          color: '#71717a',
+          font: { size: 11 },
+          callback: (value) => `$${value / 1000}k`
+        }
+      }
+    },
+    interaction: {
+      intersect: false,
+      mode: 'index',
+    }
+  }
+}
+```
+
+### 9.4 面积图设计
+
+```javascript
+// 带渐变的面积图
+{
+  type: 'line',
+  data: {
+    datasets: [{
+      ...,
+      fill: true,
+      backgroundColor: (context) => {
+        const chart = context.chart;
+        const {ctx, chartArea} = chart;
+        if (!chartArea) return null;
+        const gradient = ctx.createLinearGradient(0, chartArea.bottom, 0, chartArea.top);
+        gradient.addColorStop(0, 'rgba(99, 102, 241, 0)');
+        gradient.addColorStop(1, 'rgba(99, 102, 241, 0.3)');
+        return gradient;
+      },
+    }]
+  }
+}
+```
+
+### 9.5 多数据折线图
+
+```javascript
+// 多数据集配色方案
+{
+  datasets: [
+    {
+      label: 'Revenue',
+      borderColor: '#22c55e',   // 绿色
+      backgroundColor: 'rgba(34, 197, 94, 0.1)',
+    },
+    {
+      label: 'Users',
+      borderColor: '#f472b6',   // 粉色
+      backgroundColor: 'rgba(244, 114, 182, 0.1)',
+    },
+    {
+      label: 'Sessions',
+      borderColor: '#22d3ee',   // 青色
+      backgroundColor: 'rgba(34, 211, 238, 0.1)',
+    }
+  ]
+}
+```
+
+### 9.6 柱状图设计
+
+```javascript
+// 专业柱状图
+{
+  type: 'bar',
+  options: {
+    borderRadius: 8,                    // 圆角
+    borderSkipped: false,
+    barThickness: 32,
+    maxBarThickness: 48,
+    plugins: {
+      legend: { display: false }
+    },
+    scales: {
+      x: {
+        grid: { display: false }
+      },
+      y: {
+        grid: {
+          color: '#27272a',
+        },
+        ticks: {
+          color: '#71717a'
+        }
+      }
+    }
+  }
+}
+```
+
+### 9.7 饼图/环形图
+
+```javascript
+// 环形图设计
+{
+  type: 'doughnut',
+  options: {
+    cutout: '70%',                    // 环形宽度
+    plugins: {
+      legend: {
+        position: 'right',
+        labels: {
+          color: '#e4e4e7',
+          font: { size: 12 },
+          padding: 16,
+          usePointStyle: true,
+          pointStyle: 'circle'
+        }
+      }
+    }
+  },
+  data: {
+    datasets: [{
+      data: [30, 25, 20, 15, 10],
+      backgroundColor: [
+        '#22c55e',  // 绿色
+        '#3b82f6',  // 蓝色
+        '#f472b6',  // 粉色
+        '#f59e0b',  // 橙色
+        '#8b5cf6',  // 紫色
+      ],
+      borderWidth: 0,
+      hoverOffset: 8,
+    }]
+  }
+}
+```
+
+### 9.8 图表配色方案
+
+#### 暗色主题配色
+```javascript
+const chartColors = {
+  // 主色系
+  primary: {
+    green: '#22c55e',
+    blue: '#3b82f6',
+    purple: '#8b5cf6',
+    pink: '#f472b6',
+    orange: '#f59e0b',
+    cyan: '#22d3ee',
+    red: '#ef4444',
+  },
+  // 渐变色
+  gradient: {
+    green: ['#22c55e', '#16a34a'],
+    blue: ['#3b82f6', '#2563eb'],
+    purple: ['#8b5cf6', '#7c3aed'],
+  },
+  // 背景
+  background: 'transparent',
+  grid: '#27272a',
+  text: {
+    primary: '#fafafa',
+    secondary: '#a1a1aa',
+    muted: '#71717a',
+  }
+};
+```
+
+#### 渐变色配置
+```javascript
+// 折线图渐变填充
+const createGradient = (ctx, colorStart, colorEnd) => {
+  const gradient = ctx.createLinearGradient(0, 0, 0, 400);
+  gradient.addColorStop(0, colorStart);
+  gradient.addColorStop(1, colorEnd);
+  return gradient;
+};
+```
+
+### 9.9 图表动画
+
+```javascript
+// 入场动画
+options: {
+  animation: {
+    duration: 1000,
+    easing: 'easeOutQuart',
+  }
+}
+
+// 数据更新动画
+options: {
+  animation: {
+    y: {
+      duration: 400,
+      from: 500,
+    }
+  }
+}
+```
+
+### 9.10 响应式图表
+
+```css
+/* 图表容器响应式 */
+.chart-container {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  min-height: 200px;
+  max-height: 400px;
+}
+
+.chart-container canvas {
+  max-width: 100%;
+}
+```
+
+### 9.11 仪表盘图表设计
+
+```javascript
+// 仪表盘/进度环
+{
+  type: 'doughnut',
+  options: {
+    circumference: 270,
+    rotation: 225,
+    plugins: {
+      legend: { display: false },
+      tooltip: { enabled: false }
+    }
+  }
+}
+```
+
+### 9.12 推荐图表库
+
+| 库 | 特点 | 适用场景 |
+|-----|------|----------|
+| **Recharts** | React 原生, SVG | React 项目 |
+| **Chart.js** | 简单, canvas | 快速实现 |
+| **ECharts** | 功能强大, 商业级 | 复杂图表 |
+| **Visx** | D3 + React | 需要自定义 |
+| **Nivo** | 漂亮, React | 设计导向 |
+| **ApexCharts** | 现代, 交互好 | 仪表盘 |
+
+### 9.13 图表设计检查清单
+
+```markdown
+# 图表设计必须检查
+- [ ] 配色与品牌一致
+- [ ] 字体清晰可读
+- [ ] 有适当的留白
+- [ ] 图例位置合理
+- [ ] 悬停交互流畅
+- [ ] 响应式适配
+- [ ] 加载动画优雅
+- [ ] 数据格式化正确
+- [ ] 移动端触摸友好
+- [ ] 颜色对比度足够
+```
+
+### 9.14 图表与 UI 风格统一
+
+```javascript
+// 确保图表与 UI 风格统一
+const theme = {
+  colors: {
+    primary: '#22c55e',
+    background: '#0a0a0a',
+    surface: '#171717',
+    text: {
+      primary: '#fafafa',
+      secondary: '#a1a1aa',
+    }
+  },
+  fonts: {
+    family: "'Inter', sans-serif",
+    sizes: {
+      xs: '11px',
+      sm: '12px',
+      md: '14px',
+    }
+  },
+  borderRadius: {
+    sm: '4px',
+    md: '8px',
+    lg: '12px',
+  }
+};
+
+// 应用到图表
+const chartOptions = {
+  font: { family: theme.fonts.family },
+  color: theme.colors.text.secondary,
+};
+```
+
+---
+
+## 使用示例（图表）
+
+### 示例 1: 优化折线图
+```
+用户: 这个图表太丑了，帮我优化
+Skill: 提供专业折线图配置
+```
+
+### 示例 2: 设计数据仪表盘
+```
+用户: 设计一个数据仪表盘包含多个图表
+Skill: 生成风格统一的图表组合
+```
+
+### 示例 3: 暗色主题图表
+```
+用户: 需要暗色主题的折线图
+Skill: 提供暗色主题配色和配置
+```
+
+### 示例 4: 图表动画
+```
+用户: 图表加载太生硬
+Skill: 添加流畅的入场动画
